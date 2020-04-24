@@ -121,6 +121,8 @@ class Greenball{
 	update(){
 		if(this.x<0)
 		{
+			if(this.y>=sticks && this.y<=sticks+60)
+				score+=5;
 			this.x=700;
 			this.y+=this.dy;
 			if(this.y<0 || this.y>600)
@@ -189,6 +191,8 @@ class Blueball{
 	update(){
 		if(this.x<0)
 		{
+			if(this.y>=sticks && this.y<=sticks+60)
+				score+=5;
 			this.x=700;
 			this.y+=this.dy;
 			if(this.y<0 || this.y>600)
