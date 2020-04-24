@@ -36,15 +36,23 @@ class Game {
 
 	stop(){
 
+		c.font = "30px Comic Sans MS";
+		c.textAlign = "center";
+        c.fillStyle = "black";
+		c.fillText("Game Over! Please press ENTER to restart the game!", GAME_WIDTH/2, GAME_HEIGHT/2);
 		this.gameObject.forEach(object => object.stop());
-
+		document.addEventListener("keydown",(event)=>{
+			if(event.keyCode==13)
+				location.reload();
+		})
 	}
 
 	draw(c){
 	
 		this.gameObject.forEach(object => object.draw(c));	
 		c.font = "20px Comic Sans MS";
-        c.fillStyle = "black";
+		c.textAlign = "start";
+		c.fillStyle = "black";
         c.fillText(`Life : ${life}`, 20, 30);
         c.fillText(`Score : ${score}`, 700, 30);
 	}
@@ -148,10 +156,6 @@ class Redball{
 		{
 			if(this.y>=sticks && this.y<=sticks+60)
 				  life--;
-			if(life==0)
-			{
-				window.alert(`You lost! \n Score : ${score}`);
-			}
 
 			this.x=700;
 			this.y+=this.dy;
@@ -204,24 +208,29 @@ class Stick{
     constructor(game){
 		 this.x = 0;
 		 this.y = 0;
-		 this.dy = 70;
+		 this.dy = 2;
 	}
 	
 	moveUp(){
-		this.y -= this.dy;
+		this.dy = this.dy<0?this.dy:-this.dy;
 	}
 
 	moveDown(){
-		this.y += this.dy;
+		this.dy = this.dy>0?this.dy:-this.dy;
 	}
 
     draw(c){
 		c.fillStyle = 'yellow';
 		c.fillRect(this.x, this.y, 10, 60);
+		c.beginPath();
+        c.moveTo(this.x,this.y);
+        c.lineTo(this.x+15,this.y+50);
+        c.lineTo(this.x-15,this.y+50);
 	}
 
 	update(change) {
 		sticks = this.y;
+		this.y += this.dy;
 		if(this.y<0)
 			this.y=600;
 		if(this.y>600)
@@ -255,7 +264,6 @@ class InputHandler{
 //  Raw code
 
 var previous = 0;
-
 var game = new Game(GAME_WIDTH,GAME_HEIGHT);
 game.start();
 
@@ -268,7 +276,11 @@ function gameLoop(position){
 	game.update(change);
 
 	if(life==0)
+	{
+		window.alert(`You lost! \n Score : ${score}`);
 		game.stop();
+		return;
+	}
 
 	requestAnimationFrame(gameLoop);
 }
